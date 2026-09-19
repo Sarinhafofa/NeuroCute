@@ -1,0 +1,592 @@
+* {
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+/* ---- variáveis de cor ----   */
+:root {
+  --color-white: #ffffff;
+  --color-title: #7d0c2e;
+  --color-accent: #dda413;
+  --color-label: #a2132b;
+  --color-message: #34659e;
+  --color-card-front: #c63049;
+  --color-card-match: #fefdbd;
+  --color-button-start: #5530c6;
+  --color-button-end: #438adc;
+  --color-success: #367e02;
+  --color-overlay-start: rgba(255, 255, 255, 0.399);
+  --color-overlay-end: rgba(255, 255, 255, 0.842);
+  --color-card-border: rgba(198, 48, 73, 0.18);
+  --color-card-background: rgba(255, 255, 255, 0.496);
+  --color-card-shadow: rgba(55, 134, 244, 0.12);
+  --color-shadow: rgba(0, 0, 0, 0.3);
+  --color-button-shadow: rgba(0, 0, 0, 0.2);
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--color-white);
+  font-family: "Fredoka", sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.game-wrapper {
+  background-image: linear-gradient(var(--color-overlay-start), var(--color-overlay-end)), 
+  url("FundoRed.png");
+
+  padding: 25px;
+  box-shadow: 0 20px 60px var(--color-shadow);
+  max-width: 1200px;
+  width: 100%;
+  transition: transform 0.3s ease;
+}
+
+/* ---- HISTÓRICO, CAPA ----*/
+
+.capa-page .game-wrapper,
+.history-page .game-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100dvh - 40px);
+}
+
+h2 {color: var(--color-message); font-size: 2rem; margin-bottom: 20px;}
+.capa-actions .btn {
+  font-size: 3rem;
+  padding: 20px 40px;
+  border-radius: 50px;
+  margin-top: 100px;
+}
+
+.capa-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 0;
+}
+
+.capa-page .game-header {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.history-page h1 {
+  margin-bottom: 25px;
+}
+
+.history-page #scoreHistory {
+  display: grid;
+  gap: 14px;
+  list-style: none;
+  margin: 0 auto 25px;
+  max-width: 850px;
+  padding: 0;
+}
+
+.history-item {
+  display: grid;
+  grid-template-columns: minmax(130px, 1.3fr) repeat(3, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border: 1px solid var(--color-card-border);
+  border-radius: 14px;
+  background: var(--color-card-background);
+  box-shadow: 0 6px 14px var(--color-card-shadow);
+}
+
+.history-item h2 {
+  color: var(--color-title);
+  font-size: 18px;
+}
+
+.history-stat {
+  display: grid;
+  gap: 3px;
+  text-align: center;
+}
+
+.history-stat span {
+  color: var(--color-label);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.history-stat strong {
+  color: var(--color-accent);
+  font-size: 22px;
+}
+
+.history-empty {
+  padding: 30px;
+  color: var(--color-message);
+  text-align: center;
+}
+
+.history-actions {
+  margin-top: auto;
+  text-align: center;
+}
+
+/* ---- @MEDIA HISTÓRICO ----*/
+@media (max-width: 720px) {
+  .history-page .game-wrapper {
+    padding: 15px 10px;
+  }
+
+  .history-item {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 12px 8px;
+  }
+
+  .history-item h2 {
+    grid-column: 1 / -1;
+    text-align: center;
+  }
+
+  .history-stat span {
+    font-size: 9px;
+    letter-spacing: 0.5px;
+  }
+
+  .history-stat strong {
+    font-size: 18px;
+  }
+}
+
+/* ---- CABECALHO E ESTATISTICAS ---- */
+.game-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+#message {
+  display: inline-block;
+}
+
+h1 {
+  font-family: "Fredoka", sans-serif;
+  font-weight: bold;
+
+  font-size: 4em;
+  color: var(--color-title);
+  text-shadow: 2px 2px 0 var(--color-accent);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.stats {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  width: 100%;
+  margin: 15px 0;
+  flex-wrap: wrap;
+}
+
+/* ---- Tempo, Movimentos, Pares ---- */
+.stat-card {
+  min-width: 125px;
+  padding: 12px 18px;
+  border: 1px solid var(--color-card-border);
+  border-radius: 14px;
+  background: var(--color-card-background);
+  box-shadow: 0 6px 14px var(--color-card-shadow);
+  text-align: center;
+}
+.stat-label {
+  font-size: 12px;
+  color: var(--color-label);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.stat-value {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  font-family: "Fredoka", sans-serif;
+  font-size: 30px;
+  font-weight: bold;
+  color: var(--color-accent);
+}
+
+#moves,
+#time,
+#matches {
+  margin-top: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+/* --- PAUSE --- */
+#pause {
+  background: transparent;
+  padding: 0;
+  font-size: 50px;
+}
+
+#pause:hover{
+  cursor: pointer;
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+}
+.pause-card {
+  position: absolute;
+  top: 50%;
+  right: 50px;
+  transform: translateY(-50%);
+  min-width: auto;
+  margin-left: 0;
+  padding-inline: 6px;
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* ---- MENSAGEM E TABULEIRO ---- */
+.message-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  margin: 15px 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--color-message);
+  min-height: 50px;
+}
+
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(3, auto);
+  gap: 20px;
+  margin: 20px 0;
+  padding: 20px;
+}
+
+/* ---- CARTAS ---- */
+.card {
+  width: 100px;
+  height: 100px;
+  perspective: 1000px;
+  cursor: pointer;
+}
+.card:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+}
+
+.card.flipped .card-inner,
+.card.matched .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  font-size: 2.5rem;
+}
+
+.card-front {
+  background-color: var(--color-card-front);
+}
+
+.card-back {
+  background: var(--color-white);
+  transform: rotateY(180deg);
+}
+
+.card.matched .card-back {
+  background: var(--color-card-match);
+}
+
+/* ---- CONTROLES ---- */
+.btn {
+  background: linear-gradient(135deg, var(--color-button-start), var(--color-button-end));
+  color: var(--color-white);
+  border: none;
+  padding: 12px 30px;
+  font-size: 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  font-family: "Fredoka", sans-serif;
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin: 0 10px;
+}
+.btn:hover {
+  transform: scale(1.1) translateY(-2px);
+  box-shadow: 0 5px 15px var(--color-button-shadow);
+}
+
+.btn:active { transform: translateY(0); }
+
+button {
+  border: none;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+.controls { text-align: center; margin-top: 20px; }
+
+a {
+  text-decoration: none;
+}
+
+/* ---- RESPONSIVIDADE ---- */
+
+@media (orientation:landscape) and (max-width: 720px) {
+body {
+    padding: 2px;
+  }
+  .game-board {
+    grid-template-columns: repeat(6, 58px);
+    grid-template-rows: repeat(2, 45px);
+    gap: 4px;
+    margin: 8px 0;
+    padding: 6px;
+    justify-content: center;
+  }
+
+  .card {
+    width: 45px;
+    height: 45px;
+  }
+
+  .card-front,
+  .card-back {
+    font-size: 1rem;
+  }
+
+  h1 {
+    font-size: 2em;
+  }
+
+  .message-area {
+    min-height: 10px;
+    font-size: 15px;
+  }
+
+  #pause {
+    font-size: 18px;
+  }
+
+  .stat-card {
+    min-width: 5px;
+    padding: 5px 7px;
+    border-radius: 9px;
+  }
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
+  .stat-value {
+    margin-top: 2px;
+    font-size: 10px;
+  }
+
+  .controls {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .btn {
+    justify-self: center;
+    width: 50%;
+    min-width: 0;
+    margin: 0;
+    padding: 6px 4px;
+    font-size: 8px;
+    font-weight: normal;
+    white-space: nowrap;
+  }
+}
+
+
+@media (orientation:portrait) and (max-width: 720px) {
+  body {
+    padding: 10px;
+  }
+  .pause-card {
+    position: static;
+    transform: none;
+    margin-left: 0;
+  }
+
+  .game-board {
+    grid-template-columns: repeat(4, 58px);
+    grid-template-rows: repeat(3, 58px);
+    gap: 6px;
+    row-gap: 30px;
+    margin: 50px 0;
+    padding: 20px;
+    justify-content: center;
+  }
+
+  .card {
+    width: 58px;
+    height: 58px;
+  }
+
+  .card-front,
+  .card-back {
+    font-size: 1.5rem;
+  }
+
+  h1 {
+    font-size: 2em;
+  }
+
+  .message-area {
+    margin: 4px 0;
+    min-height: 28px;
+    font-size: 15px;
+  }
+
+  #pause {
+    font-size: 22px;
+  }
+
+  .stat-card {
+    min-width: 72px;
+    padding: 5px 7px;
+    border-radius: 9px;
+  }
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+  .stat-value {
+    margin-top: 4px;
+    font-size: 13px;
+  }
+
+  .controls {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+    margin-top: 12px;
+  }
+
+  .btn {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 6px 4px;
+    font-size: 9px;
+    font-weight: normal;
+    white-space: nowrap;
+  }
+
+}
+
+@media (min-width: 721px) and (max-width: 1199px) and (orientation: portrait) {
+  .game-board {
+    grid-template-columns: repeat(6, 70px);
+    grid-template-rows: repeat(3, 70px);
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .card {
+    width: 70px;
+    height: 70px;
+  }
+
+  .card-front,
+  .card-back {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 721px) and (max-width: 1199px) and (orientation: landscape) {
+  .game-board {
+    grid-template-columns: repeat(6, 80px);
+    grid-template-rows: repeat(3, 80px);
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .card {
+    width: 80px;
+    height: 80px;
+  }
+
+  .card-front,
+  .card-back {
+    font-size: 1.8rem;
+  }
+}
+
+@media (min-width: 1200px) and (orientation: portrait) {
+  .game-board {
+    grid-template-columns: repeat(6, 80px);
+    grid-template-rows: repeat(3, 80px);
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .card {
+    width: 80px;
+    height: 80px;
+  }
+
+  .card-front,
+  .card-back {
+    font-size: 1.8rem;
+  }
+}
+
+@media (min-width: 1200px) and (orientation: landscape) {
+  .game-board {
+    grid-template-columns: repeat(6, 100px);
+    grid-template-rows: repeat(3, 100px);
+    gap: 14px;
+    justify-content: center;
+  }
+
+  .card {
+    width: 100px;
+    height: 100px;
+  }
+
+  .card-front,
+  .card-back {
+    font-size: 2.5rem;
+  }
+}

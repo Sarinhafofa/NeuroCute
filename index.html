@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Jogo da Memória | NeuroCute</title>
+  <link rel="stylesheet" href="estilo.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+</head>
+<body>
+  <div class="game-wrapper">
+    <div class="game-header">
+      <h1><span>🧠</span>NeuroCute</h1>
+      <div class="stats">
+        <div class="stat-card"><div class="stat-label">pares</div><div class="stat-value" id="matches">0</div></div>
+        <div class="stat-card"><div class="stat-label">movimentos</div><div class="stat-value" id="moves">0</div></div>
+        <div class="stat-card"><div class="stat-label">tempo</div><div class="stat-value" id="time">00:00</div></div>
+      </div>
+    </div>
+
+    <div class="message-area">
+      <span id="message">Encontre os Pares</span>
+      <button id="pause" aria-label="Pausar jogo">⏸️</button>
+    </div>
+    <div class="game-board" id="gameBoard"></div>
+    
+
+    <div class="controls">
+      <button class="btn" id="resetBtn">NOVO JOGO</button>
+      <a class="btn" id="homeBtn" href="capa.html">HOME</a>
+      <a href="historico.html" class="btn" id="historicoBtn">📜 HISTÓRICO</a>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

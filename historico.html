@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Histórico de Partidas</title>
+  <link rel="stylesheet" href="estilo.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="history-page">
+  <div class="game-wrapper">
+    <h1>📜 Histórico de Partidas</h1>
+    <ul id="scoreHistory"></ul>
+    <div class="history-actions">
+      <a href="index.html" class="btn">⬅️ Voltar ao Jogo</a>
+    </div>
+  </div>
+  <script>
+  
+    const scoreHistory = document.getElementById("scoreHistory");
+    const saved = localStorage.getItem("memoryHistory");
+
+    if (saved) {
+      const history = JSON.parse(saved);
+      history.forEach((game, index) => {
+        const li = document.createElement("li");
+        li.className = "history-item";
+        li.innerHTML = `
+          <h2>Partida ${index + 1}</h2>
+          <div class="history-stat">
+            <span>Pares</span>
+            <strong>${game.pairs}</strong>
+          </div>
+          <div class="history-stat">
+            <span>Movimentos</span>
+            <strong>${game.moves}</strong>
+          </div>
+          <div class="history-stat">
+            <span>Tempo</span>
+            <strong>${game.time}</strong>
+          </div>
+        `;
+        scoreHistory.appendChild(li);
+      });
+    } else {
+      scoreHistory.innerHTML = '<li class="history-empty">Nenhum histórico encontrado</li>';
+    }
+  </script>
+</body>
+</html>
