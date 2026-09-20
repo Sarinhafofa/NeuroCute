@@ -40,6 +40,15 @@ body {
   overflow-x: hidden;
 }
 
+/* ---- FOOTER ----*/
+footer{
+    color:rgb(92, 92, 92);
+}
+
+footer, .link {
+  font-family: serif;
+}
+
 .game-wrapper {
   background-image: linear-gradient(var(--color-overlay-start), var(--color-overlay-end)), 
   url("FundoRed.png");
