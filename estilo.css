@@ -70,17 +70,22 @@ footer, .link {
 }
 
 h2 {color: var(--color-message); font-size: 2rem; margin-bottom: 20px;}
+
 .capa-actions .btn {
-  font-size: 3rem;
-  padding: 20px 40px;
-  border-radius: 50px;
-  margin-top: 100px;
+  width: min(100%, 240px);
+  margin: 0;
+  padding: 12px 24px;
+  font-size: 1.5rem;
+  border-radius: 12px;
 }
 
 .capa-actions {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  margin-top: 0;
+  gap: 14px;
+  margin-top: 28px;
 }
 
 .capa-page .game-header {
@@ -148,6 +153,19 @@ h2 {color: var(--color-message); font-size: 2rem; margin-bottom: 20px;}
   text-align: center;
 }
 
+.history-chart {
+  width: min(100%, 520px);
+  margin: 0 auto 25px;
+  text-align: center;
+}
+
+.chart-container {
+  position: relative;
+  width: min(100%, 200px);
+  aspect-ratio: 1;
+  margin: 0 auto;
+}
+
 /* ---- @MEDIA HISTÓRICO ----*/
 @media (max-width: 720px) {
   .history-page .game-wrapper {
@@ -189,7 +207,7 @@ h1 {
   font-family: "Fredoka", sans-serif;
   font-weight: bold;
 
-  font-size: 4em;
+  font-size: 3.5em;
   color: var(--color-title);
   text-shadow: 2px 2px 0 var(--color-accent);
   margin-bottom: 10px;
@@ -256,19 +274,6 @@ h1 {
   transform: scale(1.1);
   transition: transform 0.3s ease;
 }
-.pause-card {
-  position: absolute;
-  top: 50%;
-  right: 50px;
-  transform: translateY(-50%);
-  min-width: auto;
-  margin-left: 0;
-  padding-inline: 6px;
-  border-color: transparent;
-  background: transparent;
-  box-shadow: none;
-}
-
 /* ---- MENSAGEM E TABULEIRO ---- */
 .message-area {
   display: flex;
@@ -277,7 +282,7 @@ h1 {
   gap: 8px;
   text-align: center;
   margin: 15px 0;
-  font-size: 18px;
+  font-size: 30px;
   font-weight: bold;
   color: var(--color-message);
   min-height: 50px;
@@ -370,6 +375,10 @@ button {
   transition: transform 0.3s ease;
 }
 
+#PlayBTN {
+  margin-top: 100px;
+  border-radius: 100px;
+}
 .controls { text-align: center; margin-top: 20px; }
 
 a {
@@ -451,12 +460,6 @@ body {
   body {
     padding: 10px;
   }
-  .pause-card {
-    position: static;
-    transform: none;
-    margin-left: 0;
-  }
-
   .game-board {
     grid-template-columns: repeat(4, 58px);
     grid-template-rows: repeat(3, 58px);

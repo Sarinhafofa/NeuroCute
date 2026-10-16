@@ -11,40 +11,121 @@
   <div class="game-wrapper">
     <h1>📜 Histórico de Partidas</h1>
     <ul id="scoreHistory"></ul>
+    <section class="history-chart" id="historyChartArea" hidden>
+      <h2>Média das partidas</h2>
+      <p>Média de movimentos: <strong id="averageMoves">0</strong></p>
+      <p>Média de tempo: <strong id="averageTime">00:00</strong></p>
+      <div class="chart-container">
+        <canvas id="grafico"></canvas>
+      </div>
+    </section>
     <div class="history-actions">
       <a href="game.html" class="btn">⬅️ Voltar ao Jogo</a>
     </div>
   </div>
+
+  
+
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
   
-    const scoreHistory = document.getElementById("scoreHistory");
-    const saved = localStorage.getItem("memoryHistory");
+  const scoreHistory = document.getElementById("scoreHistory");
+let chart;
 
-    if (saved) {
-      const history = JSON.parse(saved);
-      history.forEach((game, index) => {
-        const li = document.createElement("li");
-        li.className = "history-item";
-        li.innerHTML = `
-          <h2>Partida ${index + 1}</h2>
-          <div class="history-stat">
-            <span>Pares</span>
-            <strong>${game.pairs}</strong>
-          </div>
-          <div class="history-stat">
-            <span>Movimentos</span>
-            <strong>${game.moves}</strong>
-          </div>
-          <div class="history-stat">
-            <span>Tempo</span>
-            <strong>${game.time}</strong>
-          </div>
-        `;
-        scoreHistory.appendChild(li);
-      });
-    } else {
-      scoreHistory.innerHTML = '<li class="history-empty">Nenhum histórico encontrado</li>';
-    }
+function parseTime(time) {
+  const [minutes, seconds] = time.split(":").map(Number);
+  return minutes * 60 + seconds;
+}
+
+function formatTime(totalSeconds) {
+  const roundedSeconds = Math.round(totalSeconds);
+  const minutes = Math.floor(roundedSeconds / 60);
+  const seconds = roundedSeconds % 60;
+
+  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+}
+
+function carregarHistorico() {
+  try {
+    const savedHistory = JSON.parse(localStorage.getItem("memoryHistory") || "[]");
+    if (!Array.isArray(savedHistory)) return [];
+
+    return savedHistory.filter(game =>
+      game &&
+      Number.isFinite(Number(game.moves)) &&
+      Number.isFinite(Number(game.pairs)) &&
+      typeof game.time === "string" &&
+      /^\d+:[0-5]\d$/.test(game.time)
+    );
+  } catch {
+    return [];
+  }
+}
+
+function renderHistory() {
+  const history = carregarHistorico();
+
+  scoreHistory.innerHTML = "";
+  document.getElementById("historyChartArea").hidden = history.length === 0;
+
+  if (history.length === 0) {
+    scoreHistory.innerHTML =
+      '<li class="history-empty">Nenhum histórico encontrado</li>';
+    return;
+  }
+
+  history.forEach((game, index) => {
+    const item = document.createElement("li");
+    item.className = "history-item";
+    item.innerHTML = `
+      <h2>Partida ${index + 1}</h2>
+      <div class="history-stat"><span>Pares</span><strong>${game.pairs}</strong></div>
+      <div class="history-stat"><span>Movimentos</span><strong>${game.moves}</strong></div>
+      <div class="history-stat"><span>Tempo</span><strong>${game.time}</strong></div>
+    `;
+    scoreHistory.appendChild(item);
+  });
+
+  const averageMoves =
+    history.reduce((total, game) => total + Number(game.moves), 0) / history.length;
+
+  const averageSeconds =
+    history.reduce((total, game) => total + parseTime(game.time), 0) / history.length;
+
+  document.getElementById("averageMoves").textContent = averageMoves.toFixed(1);
+  document.getElementById("averageTime").textContent = formatTime(averageSeconds);
+
+  if (chart) chart.destroy();
+
+  const chartContainer = document.querySelector(".chart-container");
+  if (typeof Chart !== "function") {
+    chartContainer.textContent = "Gráfico indisponível no momento.";
+    return;
+  }
+
+  try {
+    chart = new Chart(document.getElementById("grafico"), {
+      type: "pie",
+      data: {
+        labels: ["Média de movimentos", "Média de tempo (segundos)"],
+        datasets: [{
+          data: [averageMoves, averageSeconds],
+          backgroundColor: ["#f06b8c", "#55a6a1"]
+        }]
+      },
+      options: {
+        responsive: true,
+      }
+    });
+  } catch {
+    chartContainer.textContent = "Não foi possível carregar o gráfico.";
+  }
+}
+
+renderHistory();
+
   </script>
+
 </body>
 </html>

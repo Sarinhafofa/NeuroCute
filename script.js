@@ -1,14 +1,38 @@
-const EMOJI_ITEMS = ["💗","💗","✂️","✂️","📒","📒","🫟","🫟","♻️","♻️","🐻","🐻","⚕️","⚕️","✏️","✏️","🍀","🍀"];
+const EMOJI_FIGURES = [
+  "💗", "✂️", "📒", "🫟", "♻️", "🐻", "⚕️", "✏️", "🍀",
+  "🐱", "🐸", "🐼", "🦊", "🐢", "🐙", "🦋", "🐝", "🐬",
+  "🦄", "🌈", "🌻", "🌙", "⭐", "🎈", "🎁", "🚀", "⚽",
+  "🎨", "🎵", "🍎", "🍓", "🍉", "🧁", "🥕", "🍕", "🌺",
+  "🌵", "🪁", "🎸"
+];
 
 let cards = [], flippedCards = [], matchedPairs = 0, moves = 0, timer = 0;
 let timerInterval = null, gameActive = true, lockBoard = false, jogoPausado = false;
-let history = JSON.parse(localStorage.getItem("memoryHistory")) || [];
+
+function carregarHistorico() {
+  try {
+    const savedHistory = JSON.parse(localStorage.getItem("memoryHistory") || "[]");
+    return Array.isArray(savedHistory) ? savedHistory : [];
+  } catch {
+    return [];
+  }
+}
+
+function salvarHistorico() {
+  try {
+    localStorage.setItem("memoryHistory", JSON.stringify(history));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+let history = carregarHistorico();
 
 const gameBoard = document.getElementById("gameBoard");
 const movesDisplay = document.getElementById("moves");
 const timeDisplay = document.getElementById("time");
 const matchesDisplay = document.getElementById("matches");
-const messageDisplay = document.getElementById("message");
 const resetBtn = document.getElementById("resetBtn");
 const pauseBtn = document.getElementById("pause");
 const messageText = document.getElementById("message");
@@ -26,28 +50,14 @@ function shuffleArray(arr) {
   return arr;
 }
 
-const mediaQuery = window.matchMedia("(orientation: landscape)");
-function verificaOrientacao(mq) {
-  if (mq.matches) {
-    console.log("A tela está em modo paisagem.");
-  } else {
-    console.log("A tela está em modo retrato.");
-  }
-}
-verificaOrientacao(mediaQuery);
-mediaQuery.addEventListener("change", verificaOrientacao);
-
 let totalPairs = 0;
 
 function initGame() {
   if (timerInterval) clearInterval(timerInterval);
 
-  const itemsForDevice = window.innerWidth <= 720
-    ? EMOJI_ITEMS.slice(0, 12)
-    : EMOJI_ITEMS;
-
-  cards = shuffleArray([...itemsForDevice]);
-  totalPairs = cards.length / 2;
+  totalPairs = window.innerWidth <= 720 ? 6 : 9;
+  const selectedFigures = shuffleArray([...EMOJI_FIGURES]).slice(0, totalPairs);
+  cards = shuffleArray(selectedFigures.flatMap(figure => [figure, figure]));
 
   flippedCards = [];
   matchedPairs = 0;
@@ -90,7 +100,9 @@ function renderBoard() {
 
 
 function flipCard(i) {
-  if (!gameActive || jogoPausado || lockBoard || flippedCards.includes(i)) return;
+
+    if (!gameActive || jogoPausado || lockBoard || flippedCards.includes(i)) return;
+
   flippedCards.push(i);
   document.querySelectorAll(".card")[i].classList.add("flipped");
   if (flippedCards.length === 2) {
@@ -135,9 +147,10 @@ function winGame() {
   messageText.style.color = "#367e02";
 
   history.push({ moves, time: formatTime(timer), pairs: matchedPairs });
-  localStorage.setItem("memoryHistory", JSON.stringify(history));
+  const historySaved = salvarHistorico();
 
-  alert(`TOTAL: Movimentos ${moves} Tempo ${formatTime(timer)}!\nPARABÉNS`);
+  const saveWarning = historySaved ? "" : "\nNão foi possível salvar o resultado no histórico.";
+  alert(`TOTAL: Movimentos ${moves} Tempo ${formatTime(timer)}!\nPARABÉNS${saveWarning}`);
 }
 
 function updateTimer() {
